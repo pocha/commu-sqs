@@ -40,5 +40,4 @@ Now push a message to the queue, the message should immediately come to the app 
 
 Try force closing the app, create a new message & keep checking the daemon logs. There should be a GCM message that would be sent from the server to Android app, which will wake up the app & starts the background service. The app will then register the new message. 
 
-Open the Android app
-
+Let me know how you like it by dropping me a word at [@pocha](http://twitter.com/pocha) :-)
