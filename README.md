@@ -22,6 +22,10 @@ Copy `config/app_environment_variables.rb.example` to `config/app_environment_va
 
 Deploy the rails app. Start the monitor\_queue as `rake daemon:monitor_queue:start`. Do `tail -f logs/*` to see all the logs. If the app is deployed on heroku, do `heroku logs -t`. 
 
+For testing purpose, you may simply start the daemon as `ruby libs/daemon/monitor_queue.rb`. That way, you would know if the daemon is dying. There is a corner case when daemon dies when there are no queues. So start daemon once you have deployed the app. 
+
+The server creates queues with prefix **test-** in development & **live-** in production environment. `Message.delete_queues` will delete all your queues. This is handy when you are resetting things to scratch in production mode. 
+
 #### Android App
 
 1. Import `android-app` directory in Android Studio.
@@ -53,5 +57,17 @@ Try force closing the app, create a new message & keep checking the daemon logs.
 ![Message pending to be sent on the server](images/message-pending.png)
 ![Logs showing GCM sent](images/gcm-sent.png)
 
+
+#### For your app
+
+You do not need to incorporate all of the server parts. Your own server could push the data to SQS. You can use my server as daemon that scans for data in your SQS queues that are unfetched & then sends GCM.  
+
+The `app/controllers/endpoint_controllers.rb` & `lib/daemons/monitor_queue.rb` is important. The other Messages controller is just for the purpose of showing the whole stuff in action. 
+
+From the app side, make sure you do a http call to my server when the app registers app & gcm id. The server stores it & uses the gcm id to send the GCM push.
+
+## Attribution
+
+A large part of MessageService.java code in the Android app is taken from the Localoye Android app. I did this project while I was trying to evaluate to work with them. 
 
 Let me know how you like it by dropping me a word at [@pocha](http://twitter.com/pocha) :-)
