@@ -16,13 +16,13 @@ I had plans to extend the service for upstream purpose (sending data from Androi
 
 ### Setup 
 
-### Rails server
+#### Rails server
 
 Copy `config/app_environment_variables.rb.example` to `config/app_environment_variables.rb` & fill in the appropriate details. 
 
 Deploy the rails app. Start the monitor\_queue as `rake daemon:monitor_queue:start`. Do `tail -f logs/*` to see all the logs. If the app is deployed on heroku, do `heroku logs -t`. 
 
-### Android App
+#### Android App
 
 1. Import `android-app` directory in Android Studio.
 2. Copy `AwsCredentials.java.example` as `AwsCredentials.java` & fill in the required details like AWS & GCM credentials.
@@ -32,7 +32,7 @@ Deploy the rails app. Start the monitor\_queue as `rake daemon:monitor_queue:sta
 
 3. Deploy maadi (thats Kannada for *do it*)
 
-### Seeing it in action
+#### Seeing it in action
 
 On opening the app, you would see the app generating a random app id & gcm id. The same is being sent to the server. Refresh the server to see a new queue being created.
 
