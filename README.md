@@ -34,10 +34,26 @@ Deploy the rails app. Start the monitor\_queue as `rake daemon:monitor_queue:sta
 
 ### Seeing it in action
 
-On opening the app, you would see the app generating a random app id & gcm id. The same is being sent to the server. Refresh the server to see a new queue being created. 
+On opening the app, you would see the app generating a random app id & gcm id. The same is being sent to the server. Refresh the server to see a new queue being created.
+
+![New Queue on Server](images/new-queue.png)
 
 Now push a message to the queue, the message should immediately come to the app with a notification. 
 
+<table style="width:100%">
+  <tr>
+    <td style="width:66%"><img src="images/new-message-in-queue.png"/></td>
+    <td style="width:33%"><img src="images/new-message-delivered.png"/></td>
+  </tr>
+</table>
+
 Try force closing the app, create a new message & keep checking the daemon logs. There should be a GCM message that would be sent from the server to Android app, which will wake up the app & starts the background service. The app will then register the new message. 
+
+<table style="width:100%">
+  <tr>
+    <td style="width:50%"><img src="images/message-pending.png"/></td>
+    <td style="width:50%"><img src="images/gcm-sent.png"/></td>
+  </tr>
+</table>
 
 Let me know how you like it by dropping me a word at [@pocha](http://twitter.com/pocha) :-)
