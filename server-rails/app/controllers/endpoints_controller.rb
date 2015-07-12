@@ -5,19 +5,24 @@ class EndpointsController < ApplicationController
     if ENV["RAILS_ENV"] != "production"
       queue_name = "test-#{queue_name}"
     end
-    queue = sqs.queues.named(queue_name)
-    queue.send_message(params[:json])
+    queue_url = sqs.get_queue_url(queue_name: queue_name).queue_url
+    sqs.send_message(
+      queue_url: queue_url,
+      message_body: params[:json]
+    )
+    redirect_to root_path, notice: "message successfully pushed to queue #{queue_name}"
   end
 
   def register
-    App.create(params)
+    app = App.find_or_create_by(app_id: params[:app_id]) 
+    app.update_attributes(gcm_id: params[:gcm_id])
     #create new queue with app_id as name
     sqs = Aws::SQS::Client.new(region: ENV["AWS_region"])
     queue_name = params[:app_id]
     if ENV["RAILS_ENV"] != "production"
       queue_name = "test-#{queue_name}"
     end
-    queue = sqs.queues.create(queue_name, visibility_timeout: 90, maximum_message_size: 262144)
+    queue = sqs.create_queue(queue_name: queue_name)
   end
 
- end
+end

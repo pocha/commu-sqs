@@ -23,62 +23,88 @@ public class MainActivity extends BaseActivity {
     TextView appId;
     @Bind(R.id.gcm_id)
     TextView gcmId;
+    @Bind(R.id.last_message)
+            TextView lastMessage;
 
     String _appId, _gcmId;
     ProgressDialog progress;
+    private static String SERVER_URL= "http://192.168.1.5:3000/";
+    private static String TAG="MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Log.d(TAG, "app Id " + Prefs.getString("app_id", null));
+        Log.d(TAG, "gcm Id " + Prefs.getString("gcm_id", null));
 
-        progress = ProgressDialog.show(MainActivity.this, "", "Initializing ..", true, false);
-        new AsyncTask<Void, Void, Boolean>() {
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                _appId = Prefs.getString("app_id",null);
-                if (_appId == null) {
-                    //generate app_id
-                    _appId = String.valueOf(new Random().nextInt(10000));
-                    Prefs.putString("app_id", _appId);
-                }
+        _appId = Prefs.getString("app_id",null);
+        _gcmId = Prefs.getString("gcm_id", null);
 
-                _gcmId = Prefs.getString("gcm_id",null);
-                if (_gcmId == null) {
-                    //register with gcm & get id
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
-                    try {
-                        _gcmId = gcm.register("528993769112");
-                        Prefs.putString("gcmId", _gcmId);
+        if (_appId == null || _gcmId == null) {
+            progress = ProgressDialog.show(MainActivity.this, "", "Initializing ..", true, false);
+            new AsyncTask<Void, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(Void... params) {
 
-                        String url = "http://localhost:3000/endpoints/register/" + _appId + "/" + _gcmId;
-                        OkHttpClient client = new OkHttpClient();
-                        try {
-                            Request request = new Request.Builder()
-                                    .url(url)
-                                    .build();
-
-                            client.newCall(request).execute();
-                        }
-                        catch (Exception e){
-                            Log.e("MainActivity",e.getMessage());
-                        }
-
-                    } catch (Exception e){
-                        _gcmId = "Error registering device for GCM";
-                        Log.e("MainActivity","Error while getting gcm id - "+ e.getMessage());
+                    if (_appId == null) {
+                        //generate app_id
+                        _appId = String.valueOf(new Random().nextInt(10000));
+                        Prefs.putString("app_id", _appId);
                     }
+
+
+                    if (_gcmId == null) {
+                        //register with gcm & get id
+                        Log.d(TAG, "GCM id null");
+                        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                        try {
+                            _gcmId = gcm.register("528993769112");
+                            Prefs.putString("gcm_id", _gcmId);
+
+                            String url = SERVER_URL + "/endpoints/register/" + _appId + "/" + _gcmId;
+                            OkHttpClient client = new OkHttpClient();
+                            try {
+                                Request request = new Request.Builder()
+                                        .url(url)
+                                        .build();
+
+                                client.newCall(request).execute();
+
+                            } catch (Exception e) {
+                                Log.e("MainActivity", e.getMessage());
+                            }
+
+                        } catch (Exception e) {
+                            _gcmId = "Error registering device for GCM";
+                            Log.e("MainActivity", "Error while getting gcm id - " + e.getMessage());
+                        }
+                    }
+                    return null;
                 }
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Boolean result) {
-                progress.dismiss();
-                appId.setText(_appId);
-                gcmId.setText(_gcmId);
-            }
-        }.execute();
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    progress.dismiss();
+                    appId.setText(_appId);
+                    gcmId.setText(_gcmId);
+                }
+            }.execute();
+        }
+        else {
+            appId.setText(_appId);
+            gcmId.setText(_gcmId);
+        }
+
+        if (getIntent().getStringExtra("message") != null) {
+            String message = getIntent().getStringExtra("message");
+            lastMessage.setText(message);
+            Prefs.putString("last_message", message);
+        }
+        else {
+            lastMessage.setText(Prefs.getString("last_message","no last message found"));
+        }
 
     }
 

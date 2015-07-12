@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   resources :apps
   root 'messages#index'
   resources :messages
-  post 'endpoints/deliver/:app_id' => "endpoints#deliver", as: :deliver
-  post 'endpoints/register/:app_id' => "endpoints#register", as: :register
+  get 'endpoints/deliver/:app_id/:json' => "endpoints#deliver", as: :deliver
+  get 'endpoints/register/:app_id/:gcm_id' => "endpoints#register", as: :register
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

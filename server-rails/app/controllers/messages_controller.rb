@@ -13,10 +13,12 @@ class MessagesController < ApplicationController
     end
     @queues = []
     queue_urls.each do |queue_url|  
+         puts queue_url
          queue = {}
          queue[:queue_url] = queue_url
-         queue[:message_count] = sqs.get_queue_attributes({ queue_url: queue_url, attribute_names: ["ApproximateNumberOfMessages"]})
-         queue[:last_message] = sqs.receive_message({ queue_url: queue_url })
+         queue[:message_count] = sqs.get_queue_attributes({ queue_url: queue_url, attribute_names: ["ApproximateNumberOfMessages"]}).attributes["ApproximateNumberOfMessages"]
+         queue[:last_message] = sqs.receive_message({ queue_url: queue_url, max_number_of_messages: 1}).messages
+         queue[:last_message] = queue[:last_message][0].nil? ? "-" : queue[:last_message][0].body
          @queues << queue
     end
   end
@@ -38,15 +40,16 @@ class MessagesController < ApplicationController
   # POST /messages
   # POST /messages.json
   def create
-    redirect_to deliver_path(params) and return 
 
     @message = Message.new(message_params)
 
-    respond_to do |format|
-      if @message.save
-        format.html { redirect_to @message, notice: 'Message was successfully created.' }
-        format.json { render :show, status: :created, location: @message }
-      else
+    if @message.save
+      #format.html { redirect_to @message, notice: 'Message was successfully created.' }
+      #format.json { render :show, status: :created, location: @message }
+      #puts message_params
+      redirect_to deliver_path(app_id: message_params[:app_id], json: message_params[:json]), notice: 'Message is successfully created'
+    else
+      respond_to do |format|
         format.html { render :new }
         format.json { render json: @message.errors, status: :unprocessable_entity }
       end

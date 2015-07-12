@@ -2,7 +2,7 @@
 
 <h1>Listing Messages in queue</h1>
 
-<table>
+<table style="text-align:center">
   <thead>
     <tr>
       <th>Queue | </th>
@@ -17,11 +17,6 @@
         <td><%= queue[:queue_url] %></td>
         <td><%= queue[:message_count] %></td>
         <td><%= queue[:last_message] %></td>
-        <!--
-        <td><%= link_to 'Show', message %></td>
-        <td><%= link_to 'Edit', edit_message_path(message) %></td>
-        <td><%= link_to 'Destroy', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        -->
       </tr>
     <% end %>
   </tbody>
