@@ -24,7 +24,7 @@ Deploy the rails app. Start the monitor\_queue as `rake daemon:monitor_queue:sta
 
 For testing purpose, you may simply start the daemon as `ruby libs/daemon/monitor_queue.rb`. That way, you would know if the daemon is dying. There is a corner case when daemon dies when there are no queues. So start daemon once you have deployed the app. 
 
-The server creates queues with prefix **test-** in development & **live-** in production environment. `Message.delete_queues` will delete all your queues. This is handy when you are resetting things to scratch in production mode. 
+The server creates queues with prefix **test-** in development & **live-** in production environment. `Message.delete_queues` will delete all your queues. This is handy when you are resetting things to scratch in development environment. 
 
 #### Android App
 
