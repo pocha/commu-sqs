@@ -49,11 +49,9 @@ Now push a message to the queue, the message should immediately come to the app 
 
 Try force closing the app, create a new message & keep checking the daemon logs. There should be a GCM message that would be sent from the server to Android app, which will wake up the app & starts the background service. The app will then register the new message. 
 
-<table style="width:100%">
-  <tr>
-    <td style="width:50%"><img src="images/message-pending.png"/></td>
-    <td style="width:50%"><img src="images/gcm-sent.png"/></td>
-  </tr>
-</table>
+
+![Message pending to be sent on the server](images/message-pending.png)
+![Logs showing GCM sent](images/gcm-sent.png)
+
 
 Let me know how you like it by dropping me a word at [@pocha](http://twitter.com/pocha) :-)
