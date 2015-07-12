@@ -2,3 +2,5 @@ ENV["AWS_ACCESS_KEY"] = "xxxx"
 ENV["AWS_SECRET_KEY"] = "xxxx"
 ENV["AWS_region"] = "us-west-2"
 ENV["GCM"] = "xxxx"
+QUEUE_NAME_PREFIX = ENV["RAILS_ENV"] == "production" ? "live-" : "test-"
+

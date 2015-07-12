@@ -49,6 +49,7 @@ public class MessageService extends Service {
     }
 
     public void onCreate(){
+        super.onCreate();
         new Prefs.Builder()
                 .setContext(this)
                 .setMode(ContextWrapper.MODE_PRIVATE)
@@ -56,6 +57,11 @@ public class MessageService extends Service {
                 .setUseDefaultSharedPreference(true)
                 .build();
 
+    }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d(TAG,"I am being destroyed. sob sob :-(. I will come back with venegance");
     }
 
     @Override

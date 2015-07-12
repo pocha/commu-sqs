@@ -60,7 +60,7 @@ public class MainActivity extends BaseActivity {
                         Log.d(TAG, "GCM id null");
                         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                         try {
-                            _gcmId = gcm.register("528993769112");
+                            _gcmId = gcm.register(AwsCredentials.GCM_REGISTRATION_ID);
                             Prefs.putString("gcm_id", _gcmId);
 
                             String url = SERVER_URL + "/endpoints/register/" + _appId + "/" + _gcmId;

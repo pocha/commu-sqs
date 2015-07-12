@@ -1,10 +1,7 @@
 class EndpointsController < ApplicationController
   def deliver
     sqs = Aws::SQS::Client.new(region: ENV["AWS_region"])
-    queue_name = params[:app_id]
-    if ENV["RAILS_ENV"] != "production"
-      queue_name = "test-#{queue_name}"
-    end
+    queue_name = QUEUE_NAME_PREFIX + params[:app_id]
     queue_url = sqs.get_queue_url(queue_name: queue_name).queue_url
     sqs.send_message(
       queue_url: queue_url,
@@ -18,10 +15,7 @@ class EndpointsController < ApplicationController
     app.update_attributes(gcm_id: params[:gcm_id])
     #create new queue with app_id as name
     sqs = Aws::SQS::Client.new(region: ENV["AWS_region"])
-    queue_name = params[:app_id]
-    if ENV["RAILS_ENV"] != "production"
-      queue_name = "test-#{queue_name}"
-    end
+    queue_name = QUEUE_NAME_PREFIX + params[:app_id]
     queue = sqs.create_queue(queue_name: queue_name)
   end
 

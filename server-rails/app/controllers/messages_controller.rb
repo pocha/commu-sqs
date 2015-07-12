@@ -6,11 +6,7 @@ class MessagesController < ApplicationController
   def index
     #@messages = Message.all
     sqs = Aws::SQS::Client.new(region: ENV["AWS_region"])
-    if ENV["RAILS_ENV"] != "production" 
-      queue_urls =  sqs.list_queues(queue_name_prefix: "test-").queue_urls.each 
-    else
-      queue_urls =  sqs.list_queues().queue_urls.each 
-    end
+    queue_urls =  sqs.list_queues(queue_name_prefix: QUEUE_NAME_PREFIX).queue_urls.each 
     @queues = []
     queue_urls.each do |queue_url|  
          puts queue_url

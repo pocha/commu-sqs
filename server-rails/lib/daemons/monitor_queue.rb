@@ -27,28 +27,32 @@ Signal.trap("TERM") do
 end
 
 while($running) do
-  if ENV["RAILS_ENV"] != "production"
-    queue_urls = $sqs.list_queues(queue_name_prefix: "test-").queue_urls
-  else
-    queue_urls = $sqs.list_queues.queue_urls
+  sleep 1
+  Rails.logger.info "This daemon is still running at #{Time.now}.\n"
+  begin
+    queue_urls = $sqs.list_queues(queue_name_prefix: QUEUE_NAME_PREFIX).queue_urls
+  rescue
+    next
   end
-
+  gcm_ids = []
   queue_urls.each do |queue_url|
     Rails.logger.info "processing queue #{queue_url}"
-    if message_count = $sqs.get_queue_attributes({ queue_url: queue_url, attribute_names: ["ApproximateNumberOfMessages"]}).attributes["ApproximateNumberOfMessages"]
+    message_count = $sqs.get_queue_attributes({ queue_url: queue_url, attribute_names: ["ApproximateNumberOfMessages"]}).attributes["ApproximateNumberOfMessages"].to_i
+    Rails.logger.info "message count for queue #{message_count}"
+    if message_count > 0
       Rails.logger.info "message count #{message_count} hence sending gcm"
       #send GCM to this app
       app_id = queue_url.split("/")[-1]
-      app_id.slice! "test-" if ENV["RAILS_ENV"] != "production"
-      gcm_id = App.find_by(app_id: app_id).gcm_id
-      Rails.logger.info "sending gcm for app_id #{app_id} gcm_id #{gcm_id}"
-      response = $gcm.send(gcm_id, {dude: "get your ass off & start processing messages"})
-      Rails.logger.info "response from gcm #{response.body}"
+      app_id.slice! QUEUE_NAME_PREFIX 
+      gcm_ids <<  App.find_by(app_id: app_id).gcm_id
     end
+  end
+  if !gcm_ids.empty?
+      Rails.logger.info "sending gcm for gcm_ids #{gcm_ids}"
+      response = $gcm.send(gcm_ids, {data: {dude: "get your ass off & start processing messages"}, collapse_key: "updated_score"})
+      Rails.logger.info "response from gcm #{response}"
   end
   # Replace this with your code
   #Rails.logger.auto_flushing = true
-  Rails.logger.info "This daemon is still running at #{Time.now}.\n"
   #$logger.error "This daemon is still running at #{Time.now}.\n"
-  sleep 1
 end
