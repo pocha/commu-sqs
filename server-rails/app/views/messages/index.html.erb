@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Messages in queue</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Queue | </th>
+      <th>Messages in Queue | </th>
+      <th>Next message to be fetched</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @queues.each do |queue| %>
+      <tr>
+        <td><%= queue[:queue_url] %></td>
+        <td><%= queue[:message_count] %></td>
+        <td><%= queue[:last_message] %></td>
+        <!--
+        <td><%= link_to 'Show', message %></td>
+        <td><%= link_to 'Edit', edit_message_path(message) %></td>
+        <td><%= link_to 'Destroy', message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        -->
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'View Apps', apps_path %>
+<%= link_to 'Put New Message in Queue', new_message_path %>
