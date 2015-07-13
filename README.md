@@ -1,6 +1,6 @@
 ## Commu-SQS
 
-This project is to demonstrate how to use Amazon SQS for a gauranteed & fastest server -> (Android) client communication. Usually, people use GCM for such cases but GCM message tend to get delayed. 
+This project is to demonstrate how to use Amazon SQS for a guaranteed & fastest server -> (Android) client communication. Usually, people use GCM for such cases but GCM message tend to get delayed. 
 
 Here, one queue per Android client is created on Amazon SQS. Server inserts data to the queue. On Android, there is a persistent background service that keeps listening for data on the queue. On getting data, it generates a notification. 
 

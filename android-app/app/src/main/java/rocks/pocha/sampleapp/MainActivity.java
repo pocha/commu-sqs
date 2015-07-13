@@ -28,7 +28,7 @@ public class MainActivity extends BaseActivity {
 
     String _appId, _gcmId;
     ProgressDialog progress;
-    private static String SERVER_URL= "http://192.168.1.5:3000/";
+    private static String SERVER_URL= "https://commu-sqs.herokuapp.com/";
     private static String TAG="MainActivity";
 
     @Override
